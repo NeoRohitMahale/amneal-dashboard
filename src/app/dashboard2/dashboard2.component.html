@@ -1,0 +1,333 @@
+<section class="mainheader">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-default">
+    <div class="left-section">
+      <button type="button" class="btn btn-default refresh-btn"><a routerLink="/dashboard1"><img
+        src="../assets/img/refresh.png" alt="Refresh"></a></button>
+      <p style="font-family: ProximaNova-Bold;">(switch view)</p>
+      <form #screenForm="ngForm">
+      <div class="select-div">
+       
+        <select [(ngModel)]="selectedFacilityId" name="selectedFacilityId" (change)="getScreen()" class="dropdown-select">
+          <option value="0">FACILITY</option>
+          <option *ngFor="let f of facilities" [value]="f.FacilityId">{{f.FacilityName}}</option>
+        </select>
+      </div>
+      <div class="select-div">
+      
+        <select [(ngModel)]="selectedAreaId" name="selectedAreaId" (change)="getScreen()" class="dropdown-select">
+          <option value="0">AREA</option>
+          <option *ngFor="let a of areas" [value]="a.AreaId">{{a.AreaName}}</option>
+        </select>
+          </div>
+      </form>
+    </div>
+    <div class="right-section">
+      <div class="graph-section">
+        <img src="../assets/img/logo.png" alt="Logo" class="img-responsive pull-right">
+      </div>
+      <div class="title-section">
+        <ul>
+          <li>LINE 1</li>
+          <li>LINE 2</li>
+          <li>LINE 3</li>
+          <li>LINE 4</li>
+          <li>LINE 5</li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+</section>
+
+<section class="mainsection">
+  <table class="table table-bordered">
+
+    <tbody>
+    <tr [ngStyle]="{'height': minHeight}">
+      <td>
+        <p class="uppercase">Completed <span class="dot1"></span></p>
+        <label *ngIf="statusCounts[0]">({{statusCounts[0].Total}} of {{statusCounts[0].OutOf}})</label>
+      </td>
+      <td style="background: rgba(255, 104, 104, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[0][0]" [package]="package">
+        </app-package> -->
+          <div class="single-box" *ngFor="let package of finalFilteredPackages[0][0];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 104, 104, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[1][0]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[1][0];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 104, 104, 0.6); padding: 0;">
+      <!--   <app-package *ngFor="let package of finalFilteredPackages[2][0]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[2][0];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 104, 104, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[3][0]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[3][0];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 104, 104, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[4][0]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[4][0];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+    <tr [ngStyle]="{'height': minHeight}">
+      <td>
+        <p class="uppercase">In-Progress <span class="dot2"></span></p>
+        <label *ngIf="statusCounts[1]">({{statusCounts[1].Total}} of {{statusCounts[1].OutOf}})</label>
+      </td>
+      <td style="background: rgba(245, 236, 197, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[0][1]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[0][1];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(245, 236, 197, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[1][1]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[1][1];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(245, 236, 197, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[2][1]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[2][1];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(245, 236, 197, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[3][1]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[3][1];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(245, 236, 197, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[4][1]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[4][1];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+    <tr [ngStyle]="{'height': minHeight}">
+      <td>
+        <p class="uppercase">Ready For Process <span class="dot3"></span></p>
+        <label *ngIf="statusCounts[2]">({{statusCounts[2].Total}} of {{statusCounts[2].OutOf}})</label>
+      </td>
+
+      <td style="background: rgba(213, 254, 198, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[0][2]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[0][2];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(213, 254, 198, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[1][2]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[1][2];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(213, 254, 198, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[2][2]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[2][2];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(213, 254, 198, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[3][2]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[3][2];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(213, 254, 198, 0.6); padding: 0;">
+      <!--   <app-package *ngFor="let package of finalFilteredPackages[4][2]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[4][2];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+    <tr [ngStyle]="{'height': minHeight}">
+      <td>
+        <p class="uppercase">Scheduled <span class="dot4"></span></p>
+        <label *ngIf="statusCounts[3]">({{statusCounts[3].Total}} of {{statusCounts[3].OutOf}})</label>
+      </td>
+      <td style="background:rgba(194, 230, 255, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[0][3]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[0][3];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background:rgba(194, 230, 255, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[1][3]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[1][3];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background:rgba(194, 230, 255, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[2][3]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[2][3];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background:rgba(194, 230, 255, 0.6); padding: 0;">
+      <!--   <app-package *ngFor="let package of finalFilteredPackages[3][3]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[3][3];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background:rgba(194, 230, 255, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[4][3]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[4][3];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+    <tr [ngStyle]="{'height': minHeight}">
+      <td>
+        <p class="uppercase">Warehouse & QA <span class="dot5"></span></p>
+        <label *ngIf="statusCounts[4]">({{statusCounts[4].Total}} of {{statusCounts[4].OutOf}})</label>
+      </td>
+      <td style="background: rgba(255, 255, 255, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[0][4]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[0][4];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 255, 255, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[1][4]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[1][4];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 255, 255, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[2][4]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[2][4];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 255, 255, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of finalFilteredPackages[3][4]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[3][4];let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0" style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 255, 255, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of finalFilteredPackages[4][4]" [package]="package">
+        </app-package> -->
+         <div class="single-box" *ngFor="let package of finalFilteredPackages[4][4];let i = index;" [ngClass]="{'borderBlack':i===1}" >
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;margin-right:-5px;margin-left:-5px;color:white;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+
+    </tbody>
+  </table>
+</section>
+

@@ -1,0 +1,476 @@
+<section class="mainheader">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-default">
+    <div class="left-section">
+      <button type="button" class="btn btn-default refresh-btn" (click)="toggleScreen()">
+        <img
+          src="../assets/img/refresh.png"
+          alt="Refresh"></button>
+      <p style="font-family: ProximaNova-Bold;">(switch view)</p>
+      <form #screenForm="ngForm" *ngIf="allowScreenSelect">
+      <div class="select-div">
+        <select [(ngModel)]="selectedFacilityId" name="selectedFacilityId" (change)="getScreen()" class="dropdown-select" >
+          <option value="0">FACILITY</option>
+          <option *ngFor="let f of facilities" [value]="f.FacilityId">{{f.FacilityName}}</option>
+        </select>
+        </div>
+        <div class="select-div">
+        <select [(ngModel)]="selectedAreaId"  name="selectedAreaId" (change)="getScreen()" class="dropdown-select" >
+          <option value="0">AREA</option>
+          <option *ngFor="let a of areas" [value]="a.AreaId">{{a.AreaName}}</option>
+        </select>
+       </div>
+      </form>
+
+    </div>
+    <div class="right-section">
+      <div class="graph-section">
+        <img src="../assets/img/logo.png" alt="Logo" class="img-responsive pull-right">
+      </div>
+      <div class="title-section" *ngIf="screenMode===1">
+        <ul>
+          <li class="uppercase">Completed <span class="dot1"></span></li>
+          <li class="uppercase">In-Progress <span class="dot2"></span></li>
+          <li class="uppercase"> Ready For Process <span class="dot3"></span></li>
+          <li class="uppercase">Scheduled <span class="dot4"></span></li>
+          <li class="uppercase">Warehouse & QA <span class="dot5"></span></li>
+        </ul>
+      </div>
+      <div class="title-section" *ngIf="screenMode===2">
+        <ul>
+          <li class="uppercase" *ngFor="let pl of packagingLines" id="screen2-li" [ngStyle]="{'width': minwidth,'text-align':center}" style="text-align: center;margin-left: 10px;">{{pl}}</li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+</section>
+
+<section class="mainsection">
+
+  <table class="table table-bordered">
+
+    <!--
+      For Screen 1
+    -->
+    <tbody *ngIf="screenMode===1">
+      <ng-container  *ngFor="let pl of packagingLines; let i=index">
+    <tr  *ngIf="getNumberOfPackagesPerLine(pl)!=0" [ngStyle]="{'height': minHeight}" >
+      
+      <td>
+        <p class="uppercase">{{pl}}</p>
+        <label>({{getNumberOfPackagesPerLine(pl)}} of {{packages.length}})</label>
+      </td>
+      <td style="background: rgba(255, 104, 104, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_COMPLETED);let i = index;" [package]="package" >
+        </app-package> -->
+        <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_COMPLETED);let i = index;"  [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span  *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size: {{package.BottleSize===""?'0':package.BottleSize}}</span>
+          <!--   <p *ngIf ="i===0" style="background: black;height: 3px;color:white;margin-right:-5px;margin-left:-5px;z-index: 3 !important;"></p>  -->
+        </div>
+        
+      </td>
+      <td style="background: rgba(245, 236, 197, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_IN_PROGRESS)"
+                     [package]="package"></app-package> -->
+       <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_IN_PROGRESS);let i = index;" [ngClass]="{'borderBlack':i===1}" >
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+          <!--   <p *ngIf ="filterPackagesForLineAndStatus(pl,STATUS_COMPLETED).length > 1"style="background: black;height: 3px;color:white;margin-right:-5px;margin-left:-5px;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(213, 254, 198, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_READY_FOR_PROCESS)"
+                     [package]="package"></app-package> -->
+       <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_READY_FOR_PROCESS);let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{(package.ItemName ===''?'NA':package.ItemName) }}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+          <!--   <p *ngIf ="i===0"style="background: black;height: 3px;color:white;margin-right:-5px;margin-left:-5px;z-index: 3 !important;"></p> --> 
+        </div>
+      </td>
+      <td style="background:rgba(194, 230, 255, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_SCHEDULED)"
+                     [package]="package"></app-package> -->
+      <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_SCHEDULED);let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=' '" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;color:white;margin-right:-5px;margin-left:-5px;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+      <td style="background: rgba(255, 255, 255, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_WAREHOUSE_AND_QA)"
+                     [package]="package"></app-package> -->
+        <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_WAREHOUSE_AND_QA);let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span>{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=' '" style="font-size: 12px;float: right;margin-top: 3%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+          <!--   <p *ngIf ="i===0"style="background: black;height: 3px;color:white;margin-right:-5px;margin-left:-5px;z-index: 3 !important;"></p> --> 
+        </div>
+      </td>
+      
+    </tr>
+    </ng-container>
+    <!-- Static Lines <tr>
+      <td>
+        <p>LINE 1</p>
+        <label>({{getNumberOfPackages('Line 1')}} of {{packages.length}})</label>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[0][0]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[0][1]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[0][2]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[0][3]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[0][4]" [package]="package">
+        </app-package>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>LINE 2</p>
+        <label>({{getNumberOfPackages('Line 2')}} of {{packages.length}})</label>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[1][0]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[1][1]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[1][2]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[1][3]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[1][4]" [package]="package">
+        </app-package>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>LINE 3</p>
+        <label>({{getNumberOfPackages('Line 3')}} of {{packages.length}})</label>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[2][0]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[2][1]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[2][2]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[2][3]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[2][4]" [package]="package">
+        </app-package>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>LINE 4</p>
+        <label>({{getNumberOfPackages('Line 4')}} of {{packages.length}})</label>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[3][0]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[3][1]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[3][2]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[3][3]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[3][4]" [package]="package">
+        </app-package>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <p>LINE 5</p>
+        <label>({{getNumberOfPackages('Line 5')}} of {{packages.length}})</label>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[4][0]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[4][1]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[4][2]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[4][3]" [package]="package">
+        </app-package>
+      </td>
+      <td>
+        <app-package *ngFor="let package of finalFilteredPackages[4][4]" [package]="package">
+        </app-package>
+      </td>
+    </tr>-->
+
+    </tbody>
+
+    <!--
+      For Screen 2
+    -->
+    <tbody *ngIf="screenMode===2">
+
+    <tr id="screen2-td" [ngStyle]="{'height': minHeightscreenMode2}">
+      <td>
+        <p class="uppercase">{{STATUS_COMPLETED}}&nbsp;<span class="dot1"></span></p>
+        <label>({{getNumberOfPackagesPerStatus(STATUS_COMPLETED)}} of {{packages.length}})</label>
+      </td>
+      <td *ngFor="let pl of packagingLines" style="background: rgba(255, 104, 104, 0.6); padding: 0;">
+      <!--   <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_COMPLETED)"
+                     [package]="package" ></app-package> -->
+       <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_COMPLETED);let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span *ngIf="packagingLines.length > 6" style="font-size: 13px;">{{package.ItemName===''?'NA':package.ItemName}}</span><span *ngIf="packagingLines.length < 6" style="font-size: 18px;">{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 2%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;color:white;margin: -2px;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+
+    <tr id="screen2-td" [ngStyle]="{'height': minHeightscreenMode2}">
+      <td>
+        <p class="uppercase">{{STATUS_IN_PROGRESS}}&nbsp;<span class="dot2"></span></p>
+        <label>({{getNumberOfPackagesPerStatus(STATUS_IN_PROGRESS)}} of {{packages.length}})</label>
+      </td>
+      <td *ngFor="let pl of packagingLines" style="background: rgba(245, 236, 197, 0.6); padding: 0;">
+        <!-- <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_IN_PROGRESS)"
+                     [package]="package"></app-package> -->
+        <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_IN_PROGRESS);let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span *ngIf="packagingLines.length > 6" style="font-size: 13px;">{{package.ItemName===''?'NA':package.ItemName}}</span><span *ngIf="packagingLines.length < 6" style="font-size: 18px;">{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 2%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;color:white;margin: -2px;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+
+    <tr id="screen2-td" [ngStyle]="{'height': minHeightscreenMode2}">
+      <td>
+        <p class="uppercase">{{STATUS_READY_FOR_PROCESS}}&nbsp;<span class="dot3"></span></p>
+        <label>({{getNumberOfPackagesPerStatus(STATUS_READY_FOR_PROCESS)}} of {{packages.length}})</label>
+      </td>
+      <td *ngFor="let pl of packagingLines" style="background: rgba(213, 254, 198, 0.6); padding: 0;">
+      <!--   <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_READY_FOR_PROCESS)"
+                     [package]="package"></app-package> -->
+        <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_READY_FOR_PROCESS);let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span *ngIf="packagingLines.length > 6" style="font-size: 13px;">{{package.ItemName===''?'NA':package.ItemName}}</span><span *ngIf="packagingLines.length < 6" style="font-size: 18px;">{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 2%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;color:white;margin: -2px;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+
+    <tr id="screen2-td" [ngStyle]="{'height': minHeightscreenMode2}">
+      <td>
+        <p class="uppercase">{{STATUS_SCHEDULED}}&nbsp;<span class="dot4"></span></p>
+        <label>({{getNumberOfPackagesPerStatus(STATUS_SCHEDULED)}} of {{packages.length}})</label>
+      </td>
+      <td *ngFor="let pl of packagingLines" style="background:rgba(194, 230, 255, 0.6); padding: 0;">
+      <!--   <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_SCHEDULED)"
+                     [package]="package"></app-package> -->
+        <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_SCHEDULED);let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span *ngIf="packagingLines.length > 6" style="font-size: 13px;">{{package.ItemName===''?'NA':package.ItemName}}</span><span *ngIf="packagingLines.length < 6" style="font-size: 18px;">{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 2%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;color:white;margin: -2px;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+
+    <tr id="screen2-td" [ngStyle]="{'height': minHeightscreenMode2}">
+      <td>
+        <p class="uppercase">{{STATUS_WAREHOUSE_AND_QA}}&nbsp;<span class="dot5"></span></p>
+        <label>({{getNumberOfPackagesPerStatus(STATUS_WAREHOUSE_AND_QA)}} of {{packages.length}})</label>
+      </td>
+      <td *ngFor="let pl of packagingLines" style="background: rgba(255, 255, 255, 0.6); padding: 0;">
+       <!--  <app-package *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_WAREHOUSE_AND_QA)"
+                     [package]="package"></app-package> -->
+          <div class="single-box" *ngFor="let package of filterPackagesForLineAndStatus(pl,STATUS_WAREHOUSE_AND_QA);let i = index;" [ngClass]="{'borderBlack':i===1}">
+            <p>{{package.ProductName===''?'':package.ProductName}}</p>
+            <p></p>
+            <span *ngIf="packagingLines.length > 6" style="font-size: 13px;">{{package.ItemName===''?'NA':package.ItemName}}</span><span *ngIf="packagingLines.length < 6" style="font-size: 18px;">{{package.ItemName===''?'NA':package.ItemName}}</span>&nbsp;&nbsp;<span *ngIf="package.ProductName!=''" style="font-size: 12px;float: right;margin-top: 2%;text-transform: capitalize !important;font-weight: 100;">Bottle Size : {{package.BottleSize===""?'0':package.BottleSize}}</span>
+            <!-- <p *ngIf ="i===0"style="background: black;height: 3px;color:white;margin: -2px;z-index: 3 !important;"></p>  -->
+        </div>
+      </td>
+    </tr>
+
+    </tbody>
+
+
+  </table>
+</section>
+<!-- Static Lines <tr>
+  <td>
+    <p>LINE 1</p>
+    <label>({{getNumberOfPackages('Line 1')}} of {{packages.length}})</label>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[0][0]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[0][1]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[0][2]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[0][3]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[0][4]" [package]="package">
+    </app-package>
+  </td>
+</tr>
+<tr>
+  <td>
+    <p>LINE 2</p>
+    <label>({{getNumberOfPackages('Line 2')}} of {{packages.length}})</label>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[1][0]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[1][1]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[1][2]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[1][3]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[1][4]" [package]="package">
+    </app-package>
+  </td>
+</tr>
+<tr>
+  <td>
+    <p>LINE 3</p>
+    <label>({{getNumberOfPackages('Line 3')}} of {{packages.length}})</label>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[2][0]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[2][1]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[2][2]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[2][3]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[2][4]" [package]="package">
+    </app-package>
+  </td>
+</tr>
+<tr>
+  <td>
+    <p>LINE 4</p>
+    <label>({{getNumberOfPackages('Line 4')}} of {{packages.length}})</label>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[3][0]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[3][1]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[3][2]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[3][3]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[3][4]" [package]="package">
+    </app-package>
+  </td>
+</tr>
+<tr>
+  <td>
+    <p>LINE 5</p>
+    <label>({{getNumberOfPackages('Line 5')}} of {{packages.length}})</label>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[4][0]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[4][1]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[4][2]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[4][3]" [package]="package">
+    </app-package>
+  </td>
+  <td>
+    <app-package *ngFor="let package of finalFilteredPackages[4][4]" [package]="package">
+    </app-package>
+  </td>
+</tr>-->
